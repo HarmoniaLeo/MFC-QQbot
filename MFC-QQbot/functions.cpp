@@ -21,8 +21,8 @@ CString checkscribe(CString* valuelist, HWND hwnd, CString caller)
 	bool suc = 0;
 	vector<CString> content;
 	CString windowName, ret;
-	int count = openFile(".\\订阅\\" + windowName + ".txt", &content);
 	windowName = getTitle(hwnd);
+	int count = openFile(".\\订阅\\" + windowName + ".txt", &content);
 	for (int i = 0; i < count; i += plContent)
 		ret += cutLeft(content[i], " ") + "\n";
 	return "目前的订阅有：\n" + ret;
@@ -33,8 +33,8 @@ CString unscribe(CString* valuelist, HWND hwnd, CString caller)
 	bool suc = 0;
 	vector<CString> content;
 	CString windowName;
-	int count = openFile(".\\订阅\\" + windowName + ".txt", &content);
 	windowName = getTitle(hwnd);
+	int count = openFile(".\\订阅\\" + windowName + ".txt", &content);
 	for (int i = 0; i < count; i += plContent)
 	{
 		if ((cutLeft(content[i], " ") == valuelist[0]) && (content[i + 1] == caller))
@@ -60,8 +60,8 @@ CString subscribe(CString* valuelist, HWND hwnd, CString caller)
 	bool suc = 0;
 	vector<CString> content;
 	CString windowName;
-	int count = openFile(".\\订阅\\" + windowName + ".txt", &content), count2 = 0;
 	windowName = getTitle(hwnd);
+	int count = openFile(".\\订阅\\" + windowName + ".txt", &content), count2 = 0;
 	CString funcName;
 	CString addlist[plContent];
 
@@ -159,14 +159,14 @@ CString subscribe(CString* valuelist, HWND hwnd, CString caller)
 
 	for (int i = 0; i < plContent; i++)
 		content.push_back(addlist[i]);
-	writeFile(".\\订阅\\" + windowName + ".txt", content, count);
+	writeFile(".\\订阅\\" + windowName + ".txt", content, count+plContent);
 	return "已经成功订阅：" + addlist[0];
 }
 
 
 CString shutDown(CString* valuelist, HWND hwnd, CString caller)
 {
-	return "";
+	return "该命令不能被执行";
 }
 
 void funcInit()

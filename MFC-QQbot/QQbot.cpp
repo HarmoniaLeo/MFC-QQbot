@@ -76,8 +76,7 @@ void writeFile(CString dir, vector<CString> list, int count)
 	char dir2[1024];
 	strcpy(dir2, dir);
 	USES_CONVERSION;
-	if (!file.Open(dir2, CFile::modeWrite))
-		file.Open(dir2, CFile::modeCreate | CFile::modeWrite);
+	file.Open(dir2, CFile::modeCreate | CFile::modeWrite);
 	for (int i = 0; i < count; i++)
 		file.WriteString(list[i] + "\n");
 	file.Close();
