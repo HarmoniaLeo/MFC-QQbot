@@ -7,7 +7,7 @@ using namespace std;
 
 const CString windowList[windowNum] = { /*以"会话名1","会话名2"……的方式添加会话名*/};
 
-const CString functions[fnum] = { "停止","订阅","取消订阅","查询订阅"/*以"口令名1","口令名2"……的方式添加口令名*/ };
+const CString functions[fnum] = { "查询命令","订阅","取消订阅","查询订阅"/*以"口令名1","口令名2"……的方式添加口令名*/ };
 const int values[fnum] = { 0,3,1,0/*以"参数数目1","参数数目2"……的方式添加参数数目*/ };
 CString(*funclist[fnum])(CString*, HWND, CString);
 const int position[8][2] = { {43,121},{970,121},{43,344},{970,344} };//更改四个定位点的坐标
@@ -21,8 +21,8 @@ CString checkscribe(CString* valuelist, HWND hwnd, CString caller)
 	bool suc = 0;
 	vector<CString> content;
 	CString windowName, ret;
-	windowName = getTitle(hwnd);
 	int count = openFile(".\\订阅\\" + windowName + ".txt", &content);
+	windowName = getTitle(hwnd);
 	for (int i = 0; i < count; i += plContent)
 		ret += cutLeft(content[i], " ") + "\n";
 	return "目前的订阅有：\n" + ret;
@@ -33,8 +33,8 @@ CString unscribe(CString* valuelist, HWND hwnd, CString caller)
 	bool suc = 0;
 	vector<CString> content;
 	CString windowName;
-	windowName = getTitle(hwnd);
 	int count = openFile(".\\订阅\\" + windowName + ".txt", &content);
+	windowName = getTitle(hwnd);
 	for (int i = 0; i < count; i += plContent)
 	{
 		if ((cutLeft(content[i], " ") == valuelist[0]) && (content[i + 1] == caller))
@@ -60,8 +60,8 @@ CString subscribe(CString* valuelist, HWND hwnd, CString caller)
 	bool suc = 0;
 	vector<CString> content;
 	CString windowName;
-	windowName = getTitle(hwnd);
 	int count = openFile(".\\订阅\\" + windowName + ".txt", &content), count2 = 0;
+	windowName = getTitle(hwnd);
 	CString funcName;
 	CString addlist[plContent];
 
@@ -159,19 +159,23 @@ CString subscribe(CString* valuelist, HWND hwnd, CString caller)
 
 	for (int i = 0; i < plContent; i++)
 		content.push_back(addlist[i]);
-	writeFile(".\\订阅\\" + windowName + ".txt", content, count+plContent);
+	writeFile(".\\订阅\\" + windowName + ".txt", content, count);
 	return "已经成功订阅：" + addlist[0];
 }
 
 
-CString shutDown(CString* valuelist, HWND hwnd, CString caller)
+CString listCommands(CString* valuelist, HWND hwnd, CString caller)
 {
-	return "该命令不能被执行";
+	CString commands;
+	commands = "\n";
+	for (int i = 0; i < fnum; i++)
+		commands += functions[i] + "\n";
+	return commands;
 }
 
 void funcInit()
 {
-	funclist[0] = &shutDown;
+	funclist[0] = &listCommands;
 	funclist[1] = &subscribe;
 	funclist[2] = &unscribe;
 	funclist[3] = &checkscribe;
