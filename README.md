@@ -19,14 +19,14 @@ GitHub项目地址：https://github.com/HarmoniaLeo/MFC-QQbot
 自动回复的本质是通过接收消息记录中特定模式的消息调用对应的CString类函数，特定模式的消息指形如“口令 参数1 参数2……”的消息。调用函数后返回的CString result将会以**@发送消息的用户名 result** 的形式被机器人发送到对应的会话窗口。参数个数需要与函数配置时申请的参数个数一致，若过少则不会回复，若过多则最后一个参数将是带 空 格的字符串（函数的配置会在0x03中介绍）。
 
 
-
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20190319180726577.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQ0MTc0Mg==,size_16,color_FFFFFF,t_70)
 
 
 ### 2.订阅与定时推送
 
 **functions.cpp**中预置有函数**CString subscribe(CString* valuelist,HWND hwnd,CString caller)**，对应口令为“订阅”，当会话中出现形如**订阅 口令名[(参数1,参数2……)] YYYY:MM:DD:HH:MM:SS [Nd][Nh][Nm][Ns]**（[]内的内容可以省略）的消息时，机器人会自动记录该订阅，回复“@用户名 订阅成功：口令名”，并根据YYYY:MM:DD:HH:MM:SS和[Nd][Nh][Nm][Ns]这两个参数来定时调用口令名对应的函数，并回复消息。假如这个口令名没有对应函数，则机器人会回复该口令原本的内容。
 
-
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20190319180845472.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQ0MTc0Mg==,size_16,color_FFFFFF,t_70)
 
 举个例子：我想要订阅口令名为“复读”的函数，想要从1919年11月4日5点14分开始每隔8小时1秒调用一次，我可以在会话中回复“订阅 复读 1919:11:4:5:14:0 8h1s”，如果我想从现在开始调用函数，则YYYY:MM:DD:HH:MM:SS参数可以被替换为-1，如果我只想让它推送一次该函数，之后就将这个订阅删除，我可以把[Nd][Nh][Nm][Ns]参数替换为-1。如果“复读”没有对应函数，那么它就会从1919年11月4日5点14分开始每隔8小时1秒回复一次“复读”。
 
@@ -37,7 +37,7 @@ GitHub项目地址：https://github.com/HarmoniaLeo/MFC-QQbot
 由于该框架的高度可拓展性，您甚至可以制作出终端类的QQ机器人，这可以通过本框架提供的API实现。
 
 
-
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20190319180916646.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQ0MTc0Mg==,size_16,color_FFFFFF,t_70)
 
 
 ## 0x02 听起来不错，那么我怎么开始呢？
@@ -48,22 +48,22 @@ GitHub项目地址：https://github.com/HarmoniaLeo/MFC-QQbot
 
 Step1：打开TIM客户端，登录机器人账号，将需要回复的会话窗口拖出嵌入式的对话框，并将其全屏（注意不要最小化）。
 
-
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20190319180941840.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQ0MTc0Mg==,size_16,color_FFFFFF,t_70)
 
 Step2：测出会话窗口聊天区中4个安全点的x、y坐标（就是点击后只是把焦点设置在消息列表，而不会执行其他操作）（可以使用 https://github.com/HarmoniaLeo/Windows-Screen-Ruler 提供的工具测量），这个坐标主要受windows服务器内部设置的屏幕分辨率影响。将其填入**functions.cpp**中的**extern** **const** **int** **position[8][2]** 数组的初始化值中。如果您使用的是阿里云的Windows Server 2012 R2，则使用默认值即可。
 
-
-
-
-
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20190319181000532.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80MzQ0MTc0Mg==,size_16,color_FFFFFF,t_70)
+```c
+const int position[8][2] = { {43,121},{970,121},{43,344},{970,344} };//更改四个定位点的坐标
+```
 
 
 Step3：在**functions.cpp**中的**extern const CString windowList[windowNum]** 的初始化值中填入所有要回复的会话窗口的标题，并将**QQbot3.h**中的宏**windowNum**改为会话窗口的总数目。
 
-
-
-
-
+```c
+const CString windowList[windowNum] = { /*以"会话名1","会话名2"……的方式添加会话名*/};
+#define windowNum 2//更改窗口数目
+```
 
 
 ## 0x03 如何为QQ机器人配置函数呢？
@@ -85,19 +85,32 @@ Step1：在**functions.cpp**中的指定位置，以**CString 函数名\(CString
 若函数返回了一个CString类字符串，那么调用函数后返回的**CString result**将会以**@发送消息的用户名 result** 的形式被机器人发送到对应的会话窗口。若返回了空串，则机器人不会执行任何动作，可以用来拒绝参数格式不正确的输入。
 
 Step2：在**functions.cpp**中的**void funcInit()**函数中加入语句：**funclist[函数编号（从4开始（0-3为预留））]=&函数名;**
-
-
-
+```c
+void funcInit()
+{
+	funclist[0] = &listCommands;
+	funclist[1] = &subscribe;
+	funclist[2] = &unscribe;
+	funclist[3] = &checkscribe;
+	//初始化自定义函数
+}
+```
 Step3：在**functions.cpp**中的**extern const CString functions[fnum]** 的初始化值中函数编号对应的位置填入需要响应的口令名（也就是用户用来调用该函数的口令）
-
+```c
+const CString functions[fnum] = { "查询命令","订阅","取消订阅","查询订阅"/*以"口令名1","口令名2"……的方式添加口令名*/ };
+```
 
 
 Step4：在**functions.cpp**中的**extern const int values[fnum]** 的初始化值中函数编号对应的位置填入申请的参数个数
-
+```c
+const int values[fnum] = { 0,3,1,0/*以"参数数目1","参数数目2"……的方式添加参数数目*/ };
+```
 
 
 Step5：将**QQbot3.h**中的宏**fnum**改为函数的总数目。
-
+```c
+#define fnum 19//更改函数数目
+```
 
 
 ## 0x04 框架为我提供了哪些API呢？
