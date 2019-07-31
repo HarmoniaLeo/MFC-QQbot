@@ -143,8 +143,6 @@ CString subscribe(CString* valuelist, HWND hwnd, CString caller)
 	if (addForm == "")
 		return "订阅未成功";
 	else if (addForm == "-1")
-		addlist[2] = "-1";
-	else if (addForm == "0")
 		addlist[2] = getTimeStamp();
 	else
 		addlist[2] = addForm;

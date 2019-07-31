@@ -119,8 +119,6 @@ CString turnTimeToAddForm(CString target)
 {
 	if (target == "-1")
 		return "-1";
-	if (target == "0")
-		return "0";
 	CString target1 = target, tmp;
 	int total = 0;
 	if (target.Find(_T(":")) < 0)
